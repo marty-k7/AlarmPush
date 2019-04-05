@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,11 +15,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        
+        let center = UNUserNotificationCenter.current()
+        
+        //Set our ViewController to be a delegate to User Notification center
+        //This is important, because when alerts come in they will get handled by the instance in our ViewController, that is active in the app.
+        //But first we need to find our VC through window.rootViewController (if we don't have Navigation controller enabled, we could simply find vc like this: vc = window?.rootViewController as? ViewController
+        if let navController = window?.rootViewController as? UINavigationController {
+            if let viewController = navController.viewControllers[0] as? ViewController {
+                // if we're here, it means we found our active `ViewController` object
+                center.delegate = viewController
+            }
+        }
+        
+        // create the three actions we want for our alert
+        let show = UNNotificationAction(identifier: "show", title: "Show Group", options: .foreground)
+        
+        let destroy = UNNotificationAction(identifier: "destroy", title: "Destroy Group", options: [.destructive, .authenticationRequired])
+        
+        let rename = UNTextInputNotificationAction(identifier: "rename", title: "Rename Group", options: [], textInputButtonTitle: "Rename", textInputPlaceholder: "Type the new name here")
+        
+        // wrap the actions inside a category
+        let category = UNNotificationCategory(identifier: "alarm", actions: [show, rename, destroy], intentIdentifiers: [], options: [.customDismissAction])
+        
+        // register the category with the system
+        center.setNotificationCategories([category])
+        
         return true
+        
+        //ViewController must to conform to the UNUserNotificationCenterDelegate, for this code to work.
     }
-
+    
+    
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.

@@ -26,6 +26,7 @@ class GroupViewController: UITableViewController {
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
+    //MARK: - TableView methods
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 2
     }
@@ -55,6 +56,7 @@ class GroupViewController: UITableViewController {
         tableView.deleteRows(at: [indexPath], with: .automatic)
         save()
     }
+    //MARK: - Segues
     @objc func addAlarm() {
         let newAlarm = Alarm(name: "Create new alarm", caption: "Add an optional description", time: Date(), image: "")
         group.alarms.append(newAlarm)
@@ -76,7 +78,7 @@ class GroupViewController: UITableViewController {
             alarmVC.alarm = alarmToEdit
         }
     }
-    
+    //MARK: - TableView methtods
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             return createGroupCell(for: indexPath, in: tableView)
@@ -124,6 +126,10 @@ class GroupViewController: UITableViewController {
         }
     }
     
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.preservesSuperviewLayoutMargins = true
+        cell.contentView.preservesSuperviewLayoutMargins = true
+    }
     
     @IBAction func switchChanged(_ sender: UISwitch) {
         // panaudojam musu specialius tagus, nustatyti kuris switch knapkis pajudintas
@@ -135,15 +141,9 @@ class GroupViewController: UITableViewController {
         save()
     }
     
-    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.preservesSuperviewLayoutMargins = true
-        cell.contentView.preservesSuperviewLayoutMargins = true
-    }
-    
     @objc func save() {
         NotificationCenter.default.post(name: Notification.Name("save"), object: nil)
     }
-
 }
 
 extension GroupViewController: UITextFieldDelegate {

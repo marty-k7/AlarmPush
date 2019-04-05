@@ -42,6 +42,8 @@ class AlarmViewController: UITableViewController, UIImagePickerControllerDelegat
         alarm.time = datePicker.date
         save()
     }
+    //MARK: - Image uplaoding
+    
     @IBAction func imageViewTapped(_ sender: UIImageView) {
         let vc = UIImagePickerController()
         vc.modalPresentationStyle = .formSheet
@@ -86,6 +88,7 @@ class AlarmViewController: UITableViewController, UIImagePickerControllerDelegat
 
    
 }
+//MARK: - TextFieldDelegate methods
 
 extension AlarmViewController: UITextFieldDelegate {
     func textFieldDidEndEditing(_ textField: UITextField) {
